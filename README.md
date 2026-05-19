@@ -258,18 +258,6 @@ Two new browser primitives compound the gstack agent over time:
 
 Andrej Karpathy's [AI coding rules](https://github.com/forrestchang/andrej-karpathy-skills) (17K stars) nail four failure modes: wrong assumptions, overcomplexity, orthogonal edits, imperative over declarative. gstack's workflow skills enforce all four. `/office-hours` forces assumptions into the open before code is written. The Confusion Protocol stops Claude from guessing on architectural decisions. `/review` catches unnecessary complexity and drive-by edits. `/ship` transforms tasks into verifiable goals with test-first execution. If you already use Karpathy-style CLAUDE.md rules, gstack is the workflow enforcement layer that makes them stick across entire sprints, not just single prompts.
 
-## How it works
-
-Three things under the hood.
-
-**Skills are Markdown files.** Every slash command — `/review`, `/qa`, `/ship` — is a `SKILL.md` file in `~/.claude/skills/`. The YAML frontmatter tells Claude the skill's name, what tools it can use, and which natural-language phrases should trigger it. The body is structured prose that instructs Claude exactly what to do, step by step. Skills can call Bash, read files, open a browser, ask you questions, and spawn sub-agents. No plugin API. No framework. Just Markdown that Claude reads.
-
-**The browser is a daemon.** `/browse` and `/qa` talk to a long-lived Chromium process that stays running between commands. First call starts it (~3 seconds). Every call after: ~100ms. The CLI sends commands over localhost HTTP; the server talks to Chromium via CDP (Chrome DevTools Protocol). State persists — cookies, tabs, login sessions — so the agent can log in once and stay logged in across an entire QA session.
-
-**Skills share artifacts.** `/office-hours` writes a design doc. `/plan-ceo-review` reads it. `/plan-eng-review` writes a test plan. `/qa` picks it up. `/review` finds issues that `/ship` verifies are fixed. The sprint works because each skill looks for and writes specific files in a known format. Nothing falls through because the handoff is in the workflow, not in your head.
-
-That's it. Markdown, a browser daemon, and shared files. The rest is process.
-
 ## Parallel sprints
 
 gstack works well with one sprint. It gets interesting with ten running at once.
